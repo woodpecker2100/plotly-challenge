@@ -2,6 +2,12 @@
 
 var samples = 'samples.json'
 
+ // Function for the index.html's optionChanged action
+ function optionChanged(newSample) {
+    plotting(newSample);
+    demography(newSample);
+};
+
 // Dataset into dropdown
 function dropdown_init() {
     var dropdown = d3.select("#selDataset")
@@ -22,7 +28,6 @@ function dropdown_init() {
 };
 
 // Populating demography panel
-
 function demography(unique_id) {
     var panels = d3.select("#sample-metadata")
     panels.html("")
@@ -39,15 +44,12 @@ function demography(unique_id) {
 // Horizontal bar chart and bubble chart generation
 function plotting(unique_id) {
     d3.json(samples).then(function (data) {
-        // console.log(data);
         var samples = data.samples;
         var resultsArray = samples.filter(sampleObj => sampleObj.id == unique_id);
         var results = resultsArray[0];
-
         var otu_ids = results.otu_ids;
         var otu_labels = results.otu_labels;
         var sample_values = results.sample_values;
-
         var yticks = otu_ids.slice(0, 10).map(otuID => `OTU ${otuID}`).reverse();
 
         // Building the horizontal bar chart
@@ -89,11 +91,6 @@ function plotting(unique_id) {
         Plotly.newPlot("bubble", bubble_data, bubble_details)
     });
 }
-
- function optionChanged(newSample) {
-     plotting(newSample);
-     demography(newSample);
- };
 
 dropdown_init();
 
